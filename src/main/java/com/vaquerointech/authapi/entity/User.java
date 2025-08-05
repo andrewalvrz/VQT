@@ -3,6 +3,8 @@ package com.vaquerointech.authapi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -18,4 +20,12 @@ public class User {
     private String email;
 
     private String password;
+
+    private String name;
+
+    private String major;
+
+    private LocalDate graduationDate;
+
+    private String role;
 }
