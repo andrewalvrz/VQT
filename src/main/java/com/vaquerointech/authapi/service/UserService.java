@@ -2,6 +2,7 @@ package com.vaquerointech.authapi.service;
 
 import com.vaquerointech.authapi.dto.LoginRequest;
 import com.vaquerointech.authapi.dto.RegisterRequest;
+import com.vaquerointech.authapi.dto.RegisterResponseDTO;
 import com.vaquerointech.authapi.entity.User;
 import com.vaquerointech.authapi.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,7 @@ public class UserService {
         this.passwordEncoder = encoder;
     }
 
-    public String register(RegisterRequest request) {
+    public RegisterResponseDTO register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already in use.");
         }
@@ -33,8 +34,8 @@ public class UserService {
         user.setGraduationDate(request.getGraduationDate());
         user.setRole(request.getRole());
 
-        userRepository.save(user);
-        return "User registered successfully";
+        user = userRepository.save(user);
+        return RegisterResponseDTO.success(user.getId());
     }
 
     public String login(LoginRequest request) {
@@ -63,5 +64,22 @@ public class UserService {
         }
         userRepository.deleteById(id);
         return "User deleted successfully";
+    }
+    
+    public String updateUser(Long id, RegisterRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        
+        user.setEmail(request.getEmail());
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        user.setName(request.getName());
+        user.setMajor(request.getMajor());
+        user.setGraduationDate(request.getGraduationDate());
+        user.setRole(request.getRole());
+        
+        userRepository.save(user);
+        return "User updated successfully";
     }
 }

@@ -2,6 +2,7 @@ package com.vaquerointech.authapi.controller;
 
 import com.vaquerointech.authapi.dto.LoginRequest;
 import com.vaquerointech.authapi.dto.RegisterRequest;
+import com.vaquerointech.authapi.dto.RegisterResponseDTO;
 import com.vaquerointech.authapi.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<RegisterResponseDTO> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(userService.register(request));
     }
 
