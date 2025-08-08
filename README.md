@@ -1,66 +1,111 @@
-# Technical Documentation
+## 🧱 Component Diagram
 
-## Project Name: VaquerosInTech Auth API  
-**Author:** Andrew Alvarez  
-**Technology Stack:** Java 17+, Spring Boot, Gradle, PostgreSQL, Gradle Wrapper  
-**Project Structure Type:** Gradle (with wrapper) - Spring Boot Application  
+### Basic Layered Architecture
 
----
-
-## Project Overview  
-This project is a secure backend API for authentication and user registration for the VaquerosInTech platform. It uses:
-
-- Spring Boot for the application framework  
-- Spring Security for password hashing and CORS  
-- Gradle as the build system (with wrapper)  
-- PostgreSQL as the relational database  
-- Gradle Wrapper scripts (`gradlew`, `gradlew.bat`) for consistent builds  
+```mermaid
+graph TD
+    ClientApp[Client Application] --> RestAPI[REST API Layer]
+    RestAPI --> Controllers[Controllers Layer]
+    Controllers --> Services[Service Layer]
+    Services --> Repos[Repository Layer]
+    Repos --> DB[Database]
+```
 
 ---
 
-- Ensures all contributors use Gradle 8.14.3 to avoid version mismatches  
+### Detailed Component Diagram
+
+```mermaid
+graph TD
+    ClientApp[Client Application] --> API[REST API Layer<br/>- AuthController<br/>- UserInfoCtrl<br/>- HomeController]
+    API --> Services[Service Layer<br/>- UserService]
+    Services --> Repo[Repository Layer<br/>- UserRepository]
+    Repo --> DB[Database<br/>- PostgreSQL]
+```
 
 ---
 
-## Authentication API Details
+## 🔁 Sequence Diagram: User Registration
 
-### Endpoints
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant AC as AuthController
+    participant US as UserService
+    participant UR as UserRepository
+    participant DB as Database
 
+    C->>AC: POST /register
+    AC->>US: register()
+    US->>UR: findByEmail()
+    UR->>DB: SELECT
+    DB-->>UR: result
+    UR-->>US: user
+    US->>UR: generateUserId(), encode password
+    US->>UR: save(user)
+    UR->>DB: INSERT
+    DB-->>UR: insert result
+    UR-->>US: saved user
+    US-->>AC: success
+    AC-->>C: response
+```
 
-## 🔐 Login API
+---
 
-## 🔐 Auth API Endpoints
+## 🔐 Sequence Diagram: User Login
 
----  
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant AC as AuthController
+    participant US as UserService
+    participant UR as UserRepository
+    participant DB as Database
 
-### 🔹 POST `/api/auth/register`
+    C->>AC: POST /login
+    AC->>US: login()
+    US->>UR: findByEmail()
+    UR->>DB: SELECT
+    DB-->>UR: result
+    UR-->>US: user
+    US->>US: matches(password)
+    US-->>AC: success
+    AC-->>C: token or error
+```
 
-**Description:**  
-Creates a user with their email, name, graduation date, major,  and password. Returns a JWT token on successful registers.
+---
 
-#### 🔸 Request Body
+## 🧬 Entity-Relationship Diagram
 
-```json
-{
-  "token": "your.jwt.token",
-  "user": {
-    "id": "string",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "role": "student"
-  }
-}
+```mermaid
+erDiagram
+    USER {
+        string id PK
+        string userId "Unique"
+        string email "Unique"
+        string password
+        string name
+        string major
+        string graduationDate
+        string role
+    }
+```
 
+---
 
-### 🔹 POST `/api/auth/login`
+## 🌐 API Endpoints Map
 
-**Description:**  
-Authenticates a user with their email and password. Returns a JWT token on successful login.
+```mermaid
+flowchart TD
+    A[AuthAPI] --> B[Authentication]
+    B --> B1[POST /api/auth/register]
+    B --> B2[POST /api/auth/login]
+    A --> C[User Management]
+    C --> C1[GET /api/auth/userinfo]
+    C --> C2[GET /api/auth/userinfo/{id}]
+    C --> C3[POST /api/auth/userinfo]
+    C --> C4[DELETE /api/auth/userinfo/{id}]
+    C --> C5[POST /api/auth/userinfo/{id}]
+```
 
-#### 🔸 Request Body
-
-```json
-{
-  "email": "user@example.com",
-  "password": "yourPassword123"
-}
+---
