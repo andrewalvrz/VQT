@@ -36,10 +36,12 @@ public class UserInfoControllerTest {
     public void testGetAllUsers() throws Exception {
         User user1 = new User();
         user1.setId(1L);
+        user1.setUserId("12345");
         user1.setEmail("test1@example.com");
         
         User user2 = new User();
         user2.setId(2L);
+        user2.setUserId("67890");
         user2.setEmail("test2@example.com");
         
         List<User> users = Arrays.asList(user1, user2);
@@ -55,6 +57,7 @@ public class UserInfoControllerTest {
     public void testGetUserById() throws Exception {
         User user = new User();
         user.setId(1L);
+        user.setUserId("12345");
         user.setEmail("test@example.com");
         
         when(userService.getUserById(anyLong())).thenReturn(user);

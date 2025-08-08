@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Data
 public class UserResponseDTO {
     private Long id;
+    private String userId;
     private String email;
     private String name;
     private String major;
@@ -28,6 +29,7 @@ public class UserResponseDTO {
     public static UserResponseDTO fromUser(User user) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setId(user.getId());
+        dto.setUserId(user.getUserId());
         dto.setEmail(user.getEmail());
         dto.setName(user.getName());
         dto.setMajor(user.getMajor());
