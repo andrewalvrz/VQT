@@ -80,7 +80,7 @@ sequenceDiagram
 ```mermaid
 erDiagram
     USER {
-        string id PK
+
         string userId "Unique"
         string email "Unique"
         string password
@@ -102,10 +102,11 @@ flowchart TD
     B --> B2[POST /api/auth/login]
     A --> C[User Management]
     C --> C1[GET /api/auth/userinfo]
-    C --> C2[GET /api/auth/userinfo/{id}]
+    C --> C2[`GET /api/auth/userinfo/{id}`]
     C --> C3[POST /api/auth/userinfo]
-    C --> C4[DELETE /api/auth/userinfo/{id}]
-    C --> C5[POST /api/auth/userinfo/{id}]
+    C --> C4[`DELETE /api/auth/userinfo/{id}`]
+    C --> C5[`POST /api/auth/userinfo/{id}`]
+
 ```
 
 ---
